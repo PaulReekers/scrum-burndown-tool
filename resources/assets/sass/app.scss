@@ -1,0 +1,66 @@
+
+// Fonts
+@import url(https://fonts.googleapis.com/css?family=Raleway:200,300,400,600);
+
+// Bootstrap
+@import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+@import "minireset";
+// Variables
+@import "variables";
+
+html, body {
+    background-color: #fff;
+    color: #636b6f;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 300;
+    height: 100vh;
+    margin: 0;
+}
+
+a {
+    color: $brand-primary;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+.edit-table {
+    td {
+        width: 15%;
+    }
+}
+.mr-3 {
+    margin-right: 3px;
+}
+.mb-3 {
+    margin-bottom: 3px;
+}
+.mt-10 {
+    margin-top: 10px;
+}
+
+h1 {
+    font-size: 2em;
+    margin-bottom: 0.4em;
+}
+
+.navbar-brand {
+    padding: 0px;
+    height: 85px;
+
+    img {
+        width:200px;
+        padding: 5px 0;
+    }
+}
+.btn-primary {
+    background: $brand-primary;
+    border-color: $brand-primary;
+}
+.burndown-title {
+    font-size: 2em;
+    padding-top: 42px;
+    text-align: center;
+}
