@@ -11,11 +11,13 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        Eloquent::unguard();
+
         DB::table('users')->delete();
         User::create([
             'name' => 'Admin',
             'email' => 'admin@admin.com',
-            'password' => 'burndown'
+            'password' => Hash::make('burndown')
         ]);
     }
 }
