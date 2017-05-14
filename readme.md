@@ -36,7 +36,7 @@ Not all companies have the (expencive) Jira software tool, to make this burndown
 ## Quick Start
 Clone this repository and install the dependencies.
 
-    $ git clone https://github.com/paulreekers/Scrum-Burndown.git CUSTOM_DIRECTORY && cd CUSTOM_DIRECTORY
+    $ git clone https://github.com/PaulReekers/scrum-burndown-tool.git CUSTOM_DIRECTORY && cd CUSTOM_DIRECTORY
     $ composer install
 
 Rename the .env.example to .env, **create a database** and edit the .env file.
