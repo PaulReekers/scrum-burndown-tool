@@ -1,24 +1,21 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+use App\User as User;
 class UsersTableSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the user database seeds.
      *
      * @return void
      */
     public function run()
     {
-        // Delete users table records
         DB::table('users')->delete();
-
-        // Create users tabel and fill with default dummy records
-        DB::table('users')->create([
-            'name' => 'admin',
+        User::create([
+            'name' => 'Admin',
             'email' => 'admin@admin.com',
-            'password' => 'burndown',
+            'password' => 'burndown'
         ]);
     }
 }
