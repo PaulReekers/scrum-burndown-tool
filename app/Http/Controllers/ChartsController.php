@@ -27,19 +27,6 @@ class ChartsController extends Controller
             ]);
     }
 
-    public function burndown($slug)
-    {
-        if ($slug === null) {
-            $request->session()->flash('failure', 'No burndown slug provided.');
-        }
-
-        $chart = Chart::where('slug', $slug)
-            ->orderBy('sprintDay', 'asc')
-            ->get();
-
-        return $chart;
-    }
-
     public function index()
     {
         $charts = Chart::groupBy('sprintname', 'slug', 'startDate', 'endDate')
@@ -59,7 +46,8 @@ class ChartsController extends Controller
 
     public function create($slug = null)
     {
-        if ($slug) {
+        if ($slug)
+        {
             $chart = Chart::where('slug', $slug)
                 ->orderBy('sprintDay', 'desc')
                 ->firstOrFail();
@@ -104,38 +92,6 @@ class ChartsController extends Controller
         return redirect('/charts/' . $chart->slug . '/edit');
     }
 
-    public function show($slug)
-    {
-        $boardId = Board::where('slug', $slug)
-            ->select('boardId')
-            ->first();
-
-        $chart = Chart::where('boardId', $boardId['boardId'])
-            ->orderBy('id', 'desc')
-            ->first();
-
-        if ($chart === null) {
-            return redirect ('/chart/' . $boardId['boardId'] . '/update');
-        }
-
-        return view('charts.show', compact('chart'));
-    }
-
-    public function showslug($slug)
-    {
-        $chart = Chart::where('slug', $slug)
-            ->orderBy('sprintDay', 'desc')
-            ->first();
-
-        if ($chart)
-        {
-            return view('charts.show', compact('chart'));
-        } else {
-            // Slug is invalid
-            return abort(404);
-        }
-    }
-
     public function edit($slug)
     {
         $charts = Chart::where('slug', $slug)
@@ -171,5 +127,92 @@ class ChartsController extends Controller
         Chart::find($id)->delete();
 
         return redirect('/');
+    }
+
+    /**
+     * Show burndown
+     * @param  string $slug [description]
+     * @return array
+     */
+    public function chartBurndown($slug)
+    {
+        if ($slug === null)
+        {
+            $request->session()->flash('failure', 'No burndown slug provided.');
+        }
+
+        $chart = Chart::where('slug', $slug)
+            ->orderBy('sprintDay', 'asc')
+            ->get();
+
+        return $chart;
+    }
+
+    /**
+     * With the board slug we show the latest active sprint
+     * @param  string $slug unique board slug
+     * @return array
+     */
+    public function board($slug)
+    {
+        $boardId = Board::where('slug', $slug)
+            ->select('boardId')
+            ->first();
+
+        $chart = Chart::where('boardId', $boardId->boardId)
+            ->orderBy('sprintDay', 'desc')
+            ->first();
+
+        /**
+         * No active sprint found, create new sprint
+         */
+        if ($chart === null)
+        {
+            return redirect('/chart/' . $boardId['boardId'] . '/update');
+        }
+
+        $chartInfo = $this->chartExtraInfo($chart->boardId, $chart->sprintname);
+        $chartInfo->currentStoryPoints = $chart->storyPointsTotal;
+        $chartInfo->currentStoryPointsDone = $chart->storyPointsDone;
+
+        return view('charts.show', compact('chart', 'chartInfo'));
+    }
+
+    /**
+     * Check and show data from requested sprint-slug
+     * @param  string $slug Sprint unique slug
+     * @return array
+     */
+    public function showSprint($slug)
+    {
+        $chart = Chart::where('slug', $slug)
+            ->orderBy('sprintDay', 'desc')
+            ->first();
+
+        if ($chart)
+        {
+            $chartInfo = $this->chartExtraInfo($chart->boardId, $chart->sprintname);
+            $chartInfo->currentStoryPoints = $chart->storyPointsTotal;
+            $chartInfo->currentStoryPointsDone = $chart->storyPointsDone;
+
+            return view('charts.show', compact('chart', 'chartInfo'));
+        }
+            else
+        {
+            // Slug is invalid
+            return abort(404);
+        }
+    }
+
+    protected function chartExtraInfo($boardId, $sprintName)
+    {
+        $firstDay = Chart::where('boardId', $boardId)
+            ->where('sprintname', $sprintName)
+            ->orderBy('sprintDay', 'asc')
+            ->first();
+
+        $chartInfo = $firstDay;
+
+        return $chartInfo;
     }
 }
