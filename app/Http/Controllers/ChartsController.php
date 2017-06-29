@@ -21,8 +21,8 @@ class ChartsController extends Controller
                 'index',
                 'show',
                 'store',
-                'burndown',
-                'showslug',
+                'chartBurndown',
+                'showSprint',
                 ]
             ]);
     }
