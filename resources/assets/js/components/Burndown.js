@@ -90,7 +90,7 @@ export default Graph.extend({
 
                 datasets: [
                     {
-                        label: 'Work done',
+                        label: 'Work Left',
                         data: storyPoints,
                         borderColor: 'rgba(51, 102, 204, 1)',
                         backgroundColor: 'rgba(240, 162, 235, 0.0)',
@@ -107,7 +107,7 @@ export default Graph.extend({
                         backgroundColor: 'rgba(54, 162, 235, 0.0)',
                     },
                     {
-                        label: 'Total work',
+                        label: 'Total Work',
                         data: storyPointsTotal,
                         borderColor: 'rgba(49, 150, 43, 1)',
                         backgroundColor: 'rgba(49, 150, 43, 0.0)',

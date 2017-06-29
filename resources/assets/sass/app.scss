@@ -1,3 +1,4 @@
+@import "minireset";
 
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=Raleway:200,300,400,600);
@@ -5,7 +6,6 @@
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
 
-@import "minireset";
 // Variables
 @import "variables";
 
@@ -39,6 +39,9 @@ a {
 }
 .mt-10 {
     margin-top: 10px;
+}
+.mb-10 {
+    margin-bottom: 10px;
 }
 
 h1 {

@@ -33,7 +33,11 @@
             </tbody>
         </table>
 
-        <h2>Previous Sprints</h2>
+        @if (!Auth::guest())
+            <div class="mb-10"><a class="btn btn-small btn-primary" href="{{ URL::to('charts/create') }}">Create new Sprint</a></div>
+        @endif
+
+        <h3>Previous Sprints</h3>
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
@@ -61,9 +65,6 @@
             </tbody>
         </table>
 
-        @if (!Auth::guest())
-            <div><a class="btn btn-small btn-primary" href="{{ URL::to('charts/create') }}">Create new Sprint</a></div>
-        @endif
     </div>
 
 @endsection

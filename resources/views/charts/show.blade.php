@@ -18,7 +18,13 @@
         <div class="panel-body" >
             <burndown url="/api/burndown/{{ $chart->slug }}"></burndown>
         </div>
+
+        <span class="label label-primary">Committed: {{ $chartInfo->storyPointsTotal }}</span>
+        <span class="label label-success">Done: {{ $chartInfo->currentStoryPointsDone }}</span>
+        <span class="label label-warning">Added: {{ $chartInfo->currentStoryPoints - $chartInfo->storyPointsTotal }}</span>
+
     </div>
+
     @if ($chart->boardId)
         <div>
             <a class="btn btn-small btn-primary" href="{{
