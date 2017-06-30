@@ -67,7 +67,7 @@ export default Graph.extend({
                 var weekday = data[key].sprintDay;
 
                 if (data.hasOwnProperty(key) &&
-                    moment(weekday).format('ddd') !== 'Sat' ||
+                    moment(weekday).format('ddd') !== 'Sat' &&
                     moment(weekday).format('ddd') !== 'Sun')
                 {
                     storyPoints.push(
