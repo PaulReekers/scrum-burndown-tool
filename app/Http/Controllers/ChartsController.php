@@ -23,6 +23,7 @@ class ChartsController extends Controller
                 'store',
                 'chartBurndown',
                 'showSprint',
+                'board',
                 ]
             ]);
     }
