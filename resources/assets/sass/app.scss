@@ -67,3 +67,19 @@ h1 {
     padding-top: 42px;
     text-align: center;
 }
+
+.label {
+    padding: 6px 12px;
+    font-size: 14px;
+
+    &.label-committed {
+        background: $text-color;
+    }
+    &.label-done {
+        background: $text-color;
+    }
+    &.label-added {
+        background: $text-color;
+    }
+}
+

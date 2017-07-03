@@ -7814,4 +7814,21 @@ h1 {
   text-align: center;
 }
 
+.label {
+  padding: 6px 12px;
+  font-size: 14px;
+}
+
+.label.label-committed {
+  background: #636b6f;
+}
+
+.label.label-done {
+  background: #636b6f;
+}
+
+.label.label-added {
+  background: #636b6f;
+}
+
 /*# sourceMappingURL=app.css.map */

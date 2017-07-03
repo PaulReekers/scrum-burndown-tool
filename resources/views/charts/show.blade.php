@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 @section('title', 'Burndown ' . $chart->sprintname)
 @section('description','Get better insights of the progress of the sprint')
@@ -18,11 +19,12 @@
         <div class="panel-body" >
             <burndown url="/api/burndown/{{ $chart->slug }}"></burndown>
         </div>
+    </div>
 
-        <span class="label label-primary">Committed: {{ $chartInfo->storyPointsTotal }}</span>
-        <span class="label label-success">Done: {{ $chartInfo->currentStoryPointsDone }}</span>
-        <span class="label label-warning">Added: {{ $chartInfo->currentStoryPoints - $chartInfo->storyPointsTotal }}</span>
-
+    <div class="text-center">
+        <span class="label label-committed">Committed: {{ $chartInfo->storyPointsTotal }}</span>
+        <span class="label label-done">Done: {{ $chartInfo->currentStoryPointsDone }}</span>
+        <span class="label label-added">Added: {{ $chartInfo->currentStoryPoints - $chartInfo->storyPointsTotal }}</span>
     </div>
 
     @if ($chart->boardId)
