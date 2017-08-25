@@ -33,6 +33,8 @@
                 URL::to('/chart/' . $chart->boardId
                 . '/update')
             }}">Update</a>
+            <button v-on:click="play" type="button" class="btn btn-small btn-info">Go Coosto!</button>
+            <audio preload="auto" ref="goCoosto" src="{{ url('sound/GoCoostoAudio.mp3') }}"></audio>
         </div>
     @endif
 </div>

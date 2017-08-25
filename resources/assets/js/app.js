@@ -8,6 +8,12 @@ if (document.querySelector(selector)) {
     const burndown = new Vue({
         el: selector,
 
+        methods: {
+            play: function(event) {
+                this.$refs.goCoosto.play();
+            }
+        },
+
         components: { Burndown }
     });
 }
