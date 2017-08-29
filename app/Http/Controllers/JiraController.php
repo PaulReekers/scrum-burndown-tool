@@ -7,7 +7,6 @@ use App\Chart;
 use App\Board;
 use Carbon\Carbon;
 use App\Jira\Burndown;
-use Illuminate\Http\Request;
 
 class JiraController extends Controller
 {
@@ -24,8 +23,7 @@ class JiraController extends Controller
             ->where('sprintname', '=', $sprintInfo['values'][0]['name'])
             ->exists();
 
-        if ($dayExists)
-        {
+        if ($dayExists) {
             throw new Exception('You already saved this day');
         }
 
@@ -65,8 +63,7 @@ class JiraController extends Controller
             ->where('sprintname', '=', $sprintInfo['values'][0]['name'])
             ->first();
 
-        if (!$chart)
-        {
+        if (!$chart) {
             return $this->store($board->slug);
         }
 

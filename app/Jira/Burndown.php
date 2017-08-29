@@ -1,4 +1,4 @@
-<?PHP
+<?php
 namespace App\Jira;
 
 use Exception;
@@ -21,8 +21,7 @@ class Burndown
     {
         $response = $this->getFilterData($id);
 
-        if (!isset($response['jql']))
-        {
+        if (!isset($response['jql'])) {
             throw new Exception('Response missing _jql_ field', 1);
         }
 
@@ -33,8 +32,7 @@ class Burndown
 
         $response = $this->getSearchData($get);
 
-        if (!isset($response['total']))
-        {
+        if (!isset($response['total'])) {
             throw new Exception('Response missing _total_ field', 1);
         }
 
@@ -108,8 +106,7 @@ class Burndown
 
         $response = $this->getSprint($get);
 
-        if (!isset($response['values']) || empty($response['values']))
-        {
+        if (!isset($response['values']) || empty($response['values'])) {
             throw new Exception('No active sprints found');
         } else {
             return reset($response['values'])['id'];
@@ -125,8 +122,8 @@ class Burndown
         ], $get);
 
         $response = $this->curlGet(
-            $this->agileUrl . 'board/' . $this->boardId . '/sprint/'
-            , $get
+            $this->agileUrl . 'board/' . $this->boardId . '/sprint/',
+            $get
         );
 
         return json_decode($response, true);
@@ -134,19 +131,20 @@ class Burndown
 
     protected function getSprintIssues($id = null, array $get = [])
     {
-        if ($id === null)
-        {
+        if ($id === null) {
             throw new Exception('No sprint ID provided', 1);
         }
 
-        $get = array_merge([
+        $get = array_merge(
+            [
                 'startAt' => 0,
                 'maxResults' => 50,
                 'jql' => '',
                 'validateQuery' => true,
                 'fields' => '',
                 'expand' => ''
-            ], $get
+            ],
+            $get
         );
 
         $issues = [];
@@ -154,15 +152,14 @@ class Burndown
         do {
             $response = $this->curlGet(
                 $this->agileUrl . 'board/' . $this->boardId . '/sprint/'
-                    . $id . '/issue'
-                , $get
+                    . $id . '/issue',
+                $get
             );
 
             $response = json_decode($response, true);
             $issues = array_merge($issues, $response['issues']);
             $get['startAt'] += $get['maxResults'];
             sleep(1);
-
         } while (
             count($response['issues']) == $response['maxResults']
         );
@@ -187,12 +184,10 @@ class Burndown
             4 => 'intermediate'
         ];
 
-        foreach ($issues as $issue)
-        {
+        foreach ($issues as $issue) {
             $estimate = $issue['fields'][$this->storypointField];
 
-            if ($estimate)
-            {
+            if ($estimate) {
                 $status = $issueStatusMapping[$issue['fields']['status']['statusCategory']['id']];
                 $progress[$status] += $estimate;
                 $progress['total'] += $estimate;
@@ -220,8 +215,7 @@ class Burndown
 
         curl_setopt_array($ch, ($options + $defaults));
 
-        if (!$result = curl_exec($ch))
-        {
+        if (!$result = curl_exec($ch)) {
             trigger_error(curl_error($ch));
         }
 
@@ -245,8 +239,7 @@ class Burndown
 
         curl_setopt_array($ch, ($options + $defaults));
 
-        if (!$result = curl_exec($ch))
-        {
+        if (!$result = curl_exec($ch)) {
             trigger_error(curl_error($ch));
         }
 

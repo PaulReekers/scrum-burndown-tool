@@ -1,22 +1,18 @@
 <?php
 namespace App\Http\Controllers;
 
-use Response;
-use Exception;
 use App\Chart;
 use App\Board;
-use Validator;
 use Carbon\Carbon;
-use App\Http\Requests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 
 class ChartsController extends Controller
 {
     public function __construct()
     {
         // Set user authenthication with exceptions
-        $this->middleware('auth',
+        $this->middleware(
+            'auth',
             ['except' => [
                 'index',
                 'show',
@@ -25,21 +21,22 @@ class ChartsController extends Controller
                 'showSprint',
                 'board',
                 ]
-            ]);
+            ]
+        );
     }
 
     public function index()
     {
         $charts = Chart::groupBy('sprintname', 'slug', 'startDate', 'endDate')
-            ->where('endDate' , '>' , Carbon::now())
+            ->where('endDate', '>', Carbon::now())
             ->orderBy('startDate', 'desc')
-            ->select('sprintname','slug', 'startDate', 'endDate')
+            ->select('sprintname', 'slug', 'startDate', 'endDate')
             ->get();
 
         $oldCharts = Chart::groupBy('sprintname', 'slug', 'startDate', 'endDate')
-            ->where('endDate' , '<' , Carbon::now())
+            ->where('endDate', '<', Carbon::now())
             ->orderBy('startDate', 'desc')
-            ->select('sprintname','slug', 'startDate', 'endDate')
+            ->select('sprintname', 'slug', 'startDate', 'endDate')
             ->get();
 
         return view('charts.index', compact('charts', 'oldCharts'));
@@ -47,8 +44,7 @@ class ChartsController extends Controller
 
     public function create($slug = null)
     {
-        if ($slug)
-        {
+        if ($slug) {
             $chart = Chart::where('slug', $slug)
                 ->orderBy('sprintDay', 'desc')
                 ->firstOrFail();
@@ -59,7 +55,7 @@ class ChartsController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'sprintname' => 'required|max:255',
             'storyPointsTotal' => 'required|numeric',
             'tasksTotal' => 'required|numeric',
@@ -104,7 +100,7 @@ class ChartsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'storyPointsTotal' => 'required|numeric',
             'tasksTotal' => 'required|numeric',
             'tasksDone' => 'required|numeric',
@@ -137,8 +133,7 @@ class ChartsController extends Controller
      */
     public function chartBurndown($slug)
     {
-        if ($slug === null)
-        {
+        if ($slug === null) {
             $request->session()->flash('failure', 'No burndown slug provided.');
         }
 
@@ -167,8 +162,7 @@ class ChartsController extends Controller
         /**
          * No active sprint found, create new sprint
          */
-        if ($chart === null)
-        {
+        if ($chart === null) {
             return redirect('/chart/' . $boardId['boardId'] . '/update');
         }
 
@@ -190,16 +184,13 @@ class ChartsController extends Controller
             ->orderBy('sprintDay', 'desc')
             ->first();
 
-        if ($chart)
-        {
+        if ($chart) {
             $chartInfo = $this->chartExtraInfo($chart->boardId, $chart->sprintname);
             $chartInfo->currentStoryPoints = $chart->storyPointsTotal;
             $chartInfo->currentStoryPointsDone = $chart->storyPointsDone;
 
             return view('charts.show', compact('chart', 'chartInfo'));
-        }
-            else
-        {
+        } else {
             // Slug is invalid
             return abort(404);
         }

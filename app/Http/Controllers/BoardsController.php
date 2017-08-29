@@ -27,7 +27,7 @@ class BoardsController extends Controller
 
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'boardId' => 'required|numeric|unique:boards',
             'slug' => 'required|unique:boards',
             'totalTaskFilter' => 'required|numeric',
@@ -57,7 +57,7 @@ class BoardsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $this->validate($request,[
+        $this->validate($request, [
             'slug' => 'required|alpha_dash|min:2|unique:boards,id',
             'totalTaskFilter' => 'required|numeric',
             'tasksDoneFilter' => 'required|numeric',
@@ -77,5 +77,4 @@ class BoardsController extends Controller
 
         return redirect('/board');
     }
-
 }

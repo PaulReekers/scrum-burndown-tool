@@ -28,7 +28,7 @@ class UpdateAllBoards extends Command
     {
         $boards = Board::all();
 
-        foreach($boards as $key => $board) {
+        foreach ($boards as $key => $board) {
             $burndown = new Burndown($board->boardId);
             $sprintInfo = $burndown->getSprintNumber();
             $sprintProgress = $burndown->getSprintProgress();
@@ -38,13 +38,11 @@ class UpdateAllBoards extends Command
                 ->where('sprintname', '=', $sprintInfo['values'][0]['name'])
                 ->exists();
 
-            if ($dayExists)
-            {
+            if ($dayExists) {
                 $this->info('Sprint data ' .
                     $sprintInfo['values'][0]['name'] .
                     ' already saved for ' .
                     Carbon::now()->format('Y-m-d'));
-
             } else {
                 $chart = new Chart([
                     'sprintname' => $sprintInfo["values"][0]["name"],
@@ -73,6 +71,6 @@ class UpdateAllBoards extends Command
         }
 
         // Done, all boards have been checked and have current day data stored.
-        $this->info( 'Saved ' . Carbon::now()->format('Y-m-d') . ' data for all Jira boards');
+        $this->info('Saved ' . Carbon::now()->format('Y-m-d') . ' data for all Jira boards');
     }
 }
