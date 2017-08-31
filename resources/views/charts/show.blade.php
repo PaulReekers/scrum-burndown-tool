@@ -24,7 +24,9 @@
     <div class="text-center">
         <span class="label label-committed">Committed: {{ $chartInfo->storyPointsTotal }}</span>
         <span class="label label-done">Done: {{ $chartInfo->currentStoryPointsDone }}</span>
-        <span class="label label-added">Added: {{ $chartInfo->currentStoryPoints - $chartInfo->storyPointsTotal }}</span>
+        <span class="label label-added">Scope change: {{
+            $chartInfo->currentStoryPoints - $chartInfo->storyPointsTotal
+        }}</span>
     </div>
 
     @if ($chart->boardId)
