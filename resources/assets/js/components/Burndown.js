@@ -11,7 +11,8 @@ export default Graph.extend({
             var start = new Date(data[0].startDate),
                 startDate = new Date(data[0].startDate),
                 end = new Date(data[0].endDate),
-                totalDays = moment(end).format('DDDD') - moment(start).format('DDDD'),
+                totalDays = moment(moment(end,"DD/MM/YYYY"),"DD/MM/YYYY")
+                    .diff(moment(start,"DD/MM/YYYY"), 'days'),
                 labels = [],
                 ideal = parseInt(data[0].storyPointsTotal),
                 count = 0,
