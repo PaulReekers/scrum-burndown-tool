@@ -31,8 +31,8 @@ class JiraController extends Controller
             'sprintname' => $sprintInfo['values'][0]['name'],
             'storyPointsTotal' => $sprintProgress['total'],
             'tasksTotal' => $burndown->getFilterTotalCount($board->totalTaskFilter),
-            'tasksDone' => $burndown->getFilterTotalCount($board->tasksDoneFilter),
-            'storyPointsDone' => $sprintProgress['done'],
+            'tasksDone' => 0,
+            'storyPointsDone' => 0,
             'startDate' => Carbon::parse($sprintInfo['values'][0]['startDate'])
                 ->format('Y-m-d'),
             'endDate' => Carbon::parse($sprintInfo['values'][0]['endDate'])
