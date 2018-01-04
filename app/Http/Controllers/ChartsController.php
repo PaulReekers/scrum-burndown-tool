@@ -155,6 +155,11 @@ class ChartsController extends Controller
             ->select('boardId')
             ->first();
 
+        // No active sprints found
+        if (!$boardId) {
+            return redirect('/');
+        }
+
         $chart = Chart::where('boardId', $boardId->boardId)
             ->orderBy('sprintDay', 'desc')
             ->first();

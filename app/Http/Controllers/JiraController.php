@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Exception;
 use App\Chart;
 use App\Board;
 use Carbon\Carbon;
@@ -84,6 +83,11 @@ class JiraController extends Controller
         $board = Board::where('boardId', $boardId)
             ->orderBy('id', 'desc')
             ->first();
+
+        // No active board found
+        if (!$board) {
+            return redirect('/');
+        }
 
         $this->update($board->slug);
 
