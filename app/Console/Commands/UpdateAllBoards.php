@@ -63,6 +63,15 @@ class UpdateAllBoards extends Command
 
                 $chart->save();
 
+                $startDate = Carbon::parse($sprintInfo['values'][0]['startDate'])->toDateString();
+                $endDate = Carbon::parse($sprintInfo['values'][0]['endDate'])->toDateString();
+
+                Chart::where('sprintname', '=', $sprintInfo['values'][0]['name'])
+                    ->update([
+                        'startDate' => $startDate,
+                        'endDate' => $endDate,
+                    ]);
+
                 $this->info('Saving new ' .
                     Carbon::now()->format('Y-m-d') .
                     ' data for sprint: ' .

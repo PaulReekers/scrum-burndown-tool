@@ -18,7 +18,7 @@ class JiraController extends Controller
         $sprintProgress = $burndown->getSprintProgress();
 
         $dayExists = Chart::where('boardId', '=', $board->boardId)
-            ->where('sprintDay', '=', Carbon::now()->format('Y-m-d'))
+            ->where('sprintDay', '=', Carbon::now()->toDateString())
             ->where('sprintname', '=', $sprintInfo['values'][0]['name'])
             ->exists();
 
@@ -33,17 +33,19 @@ class JiraController extends Controller
             'tasksDone' => 0,
             'storyPointsDone' => 0,
             'startDate' => Carbon::parse($sprintInfo['values'][0]['startDate'])
-                ->format('Y-m-d'),
+                ->toDateString(),
             'endDate' => Carbon::parse($sprintInfo['values'][0]['endDate'])
-                ->format('Y-m-d'),
+                ->toDateString(),
             'sprintDay' => Carbon::now()
-                ->format('Y-m-d'),
+                ->toDateString(),
         ]);
 
         $chart->boardId = $board->boardId;
         $chart->slug = str_slug($sprintInfo['values'][0]['name'], '-');
 
         $chart->save();
+
+        $this->updateEndDate($sprintInfo);
 
         return 'Saved new day for sprint: ' . $sprintInfo['values'][0]['name'];
     }
@@ -58,7 +60,7 @@ class JiraController extends Controller
         $sprintProgress = $burndown->getSprintProgress();
 
         $chart = Chart::where('boardId', '=', $board->boardId)
-            ->where('sprintDay', '=', Carbon::now()->format('Y-m-d'))
+            ->where('sprintDay', '=', Carbon::now()->toDateString())
             ->where('sprintname', '=', $sprintInfo['values'][0]['name'])
             ->first();
 
@@ -74,6 +76,8 @@ class JiraController extends Controller
         ]);
 
         $chart->update($request->toArray());
+
+        $this->updateEndDate($sprintInfo);
 
         return 'Sprint updated';
     }
@@ -92,5 +96,22 @@ class JiraController extends Controller
         $this->update($board->slug);
 
         return redirect('/' . $board->slug);
+    }
+
+    /**
+     * Same Start and End date for current sprint entries
+     * If for anyreason the date of the sprint is changed, correct it for the
+     * already stored days.
+     */
+    protected function updateEndDate($sprintInfo)
+    {
+        $startDate = Carbon::parse($sprintInfo['values'][0]['startDate'])->toDateString();
+        $endDate = Carbon::parse($sprintInfo['values'][0]['endDate'])->toDateString();
+
+        Chart::where('sprintname', '=', $sprintInfo['values'][0]['name'])
+            ->update([
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+            ]);
     }
 }
