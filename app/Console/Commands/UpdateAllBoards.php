@@ -10,20 +10,14 @@ use Illuminate\Console\Command;
 
 class UpdateAllBoards extends Command
 {
-    /**
-     * The name and signature of the console command.
-     */
     protected $signature = 'jira:savenewday';
-    protected $description = 'Stores currend new day for each Jira board';
+    protected $description = 'Stores currend day for each Jira board';
 
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     */
     public function handle()
     {
         $boards = Board::all();
@@ -32,54 +26,59 @@ class UpdateAllBoards extends Command
             $burndown = new Burndown($board->boardId);
             $sprintInfo = $burndown->getSprintNumber();
             $sprintProgress = $burndown->getSprintProgress();
+            $storyPointsDone = $sprintProgress["done"];
+            $tasksDone = $burndown->getFilterTotalCount($board->tasksDoneFilter);
+            $sprintName = $sprintInfo['values'][0]['name'];
+            $startDate = Carbon::parse($sprintInfo['values'][0]['startDate'])->toDateString();
+            $endDate = Carbon::parse($sprintInfo['values'][0]['endDate'])->toDateString();
 
             $dayExists = Chart::where('boardId', '=', $board->boardId)
-                ->where('sprintDay', '=', Carbon::now()->format('Y-m-d'))
-                ->where('sprintname', '=', $sprintInfo['values'][0]['name'])
+                ->where('sprintDay', '=', Carbon::now()->toDateString())
+                ->where('sprintname', '=', $sprintName)
                 ->exists();
+
+            if ($startDate == Carbon::now()->toDateString()) {
+                $tasksDone = 0;
+                $storyPointsDone = 0;
+            }
 
             if ($dayExists) {
                 $this->info('Sprint data ' .
-                    $sprintInfo['values'][0]['name'] .
+                    $sprintName .
                     ' already saved for ' .
-                    Carbon::now()->format('Y-m-d'));
+                    Carbon::now()->toDateString());
             } else {
                 $chart = new Chart([
-                    'sprintname' => $sprintInfo["values"][0]["name"],
+                    'sprintname' => $sprintName,
                     'storyPointsTotal' => $sprintProgress["total"],
                     'tasksTotal' => $burndown->getFilterTotalCount($board->totalTaskFilter),
-                    'tasksDone' => $burndown->getFilterTotalCount($board->tasksDoneFilter),
-                    'storyPointsDone' => $sprintProgress["done"],
-                    'startDate' => Carbon::parse($sprintInfo["values"][0]["startDate"])
-                        ->format('Y-m-d'),
-                    'endDate' => Carbon::parse($sprintInfo["values"][0]["endDate"])
-                        ->format('Y-m-d'),
-                    'sprintDay' => Carbon::now()
-                        ->format('Y-m-d'),
+                    'tasksDone' => $tasksDone,
+                    'storyPointsDone' => $storyPointsDone,
+                    'startDate' => Carbon::parse($startDate)->toDateString(),
+                    'endDate' => Carbon::parse($endDate)->toDateString(),
+                    'sprintDay' => Carbon::now()->toDateString(),
                 ]);
 
                 $chart->boardId = $board->boardId;
-                $chart->slug = str_slug($sprintInfo["values"][0]["name"], '-');
+                $chart->slug = str_slug($sprintName, '-');
 
                 $chart->save();
 
-                $startDate = Carbon::parse($sprintInfo['values'][0]['startDate'])->toDateString();
-                $endDate = Carbon::parse($sprintInfo['values'][0]['endDate'])->toDateString();
-
-                Chart::where('sprintname', '=', $sprintInfo['values'][0]['name'])
+                // Update all start and enddate with last get
+                Chart::where('sprintname', '=', $sprintName)
                     ->update([
                         'startDate' => $startDate,
                         'endDate' => $endDate,
                     ]);
 
                 $this->info('Saving new ' .
-                    Carbon::now()->format('Y-m-d') .
+                    Carbon::now()->toDateString() .
                     ' data for sprint: ' .
-                    $sprintInfo["values"][0]["name"]);
+                    $sprintName);
             }
         }
 
-        // Done, all boards have been checked and have current day data stored.
-        $this->info('Saved ' . Carbon::now()->format('Y-m-d') . ' data for all Jira boards');
+        // Done, all boards are checked and have today's data stored.
+        $this->info('Saved ' . Carbon::now()->toDateString() . ' data for all Jira boards');
     }
 }
