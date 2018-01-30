@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use App\Chart;
 use App\Board;
 use Carbon\Carbon;
@@ -25,7 +26,15 @@ class UpdateAllBoards extends Command
         foreach ($boards as $key => $board) {
             $burndown = new Burndown($board->boardId);
             $sprintInfo = $burndown->getSprintNumber();
-            $sprintProgress = $burndown->getSprintProgress();
+
+            try {
+                $sprintProgress = $burndown->getSprintProgress();
+            } catch (Exception $e) {
+                // When the Jira API throws an error skip the board
+                $this->info($e->getMessage()." for board: ".$board->boardId);
+                continue;
+            }
+
             $storyPointsDone = $sprintProgress["done"];
             $tasksDone = $burndown->getFilterTotalCount($board->tasksDoneFilter);
             $sprintName = $sprintInfo['values'][0]['name'];
@@ -79,6 +88,6 @@ class UpdateAllBoards extends Command
         }
 
         // Done, all boards are checked and have today's data stored.
-        $this->info('Saved ' . Carbon::now()->toDateString() . ' data for all Jira boards');
+        $this->info('Saved all board data for ' . Carbon::now()->toDateString());
     }
 }
