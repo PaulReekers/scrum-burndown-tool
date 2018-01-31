@@ -24,15 +24,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Check/Store data from today for all Jira boards
+        // Check and store new data at 8am and 6pm for all Jira boards
         $schedule->command('jira:savenewday')
-            ->dailyAt('07:00')
-            ->appendOutputTo(storage_path('logs/laravel.txt'));
-
-        $schedule->command('jira:savenewday')
-            ->weekly()
-            ->mondays()
-            ->at('13:00')
+            ->twiceDaily(8, 18);
             ->appendOutputTo(storage_path('logs/laravel.txt'));
     }
 
