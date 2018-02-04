@@ -2,12 +2,12 @@
 
 
 # Scrum Burndown Tool
-Build with Laravel 5.4, Vuejs 2.3 and has support for the Jira Agile REST API
+Build with Laravel 5.5, Vuejs 2.5 and has support for the Jira Agile REST API
 
 The default Jira chart does not give you alot of information, it only shows the story points left in the sprint.
-To squels this information gap, behold the new burndown, featured with muiltiple burndown lines. In this way the Product Owner, Scrum master and the Development team can see the real progress of the sprint.
+To squels this information gap, behold the new burndown, featured with muiltiple burndown lines. Now the Product Owner, Scrum master and the Development team can see the real progress of the sprint.
 
-Not all companies have the (expencive) Jira software tool, to make this burndown usefull for as many scrum masters and mortals, the tool can also be used manualy (although a bit less cool).
+Not all companies have the (expencive) Jira software tool, to make this burndown also usefull for as many scrum masters and mortals, this tool can also be used manualy (although a bit less cool).
 
 -----
 ## Table of Contents
@@ -24,11 +24,11 @@ Not all companies have the (expencive) Jira software tool, to make this burndown
 * Homepage lists all sprints, with seperation of active sprints and previous sprints
 * Indepth view of sprint progress
     * Total work (Story Points)
-    * Work done
+    * Work left
     * Progress (sub-tasks and bugs/issues valued against Total work)
     * Ideal guideline through the end of the sprint
 * Abillity to fetch all the statistics with the Jira Agile REST API
-* Adding as many sprint/boards as you like
+* Adding as many sprint and boards as you like
 * Manualy editing/configuring the sprints
 
 -----
@@ -53,7 +53,7 @@ Generate an application key, migrate the tables and seed data.
 Install node and npm following one of the techniques explained within this [link](https://gist.github.com/isaacs/579814) to create and compile the assets of the application.
 
     $ npm install
-    $ npm run production
+    $ gulp --production
 
 
 You are done, now run the tool.
@@ -83,7 +83,7 @@ If you want to use the Jira API, you need to create 2 filters in Jira:
     AND Sprint in openSprints()
 
 
-**Work done**:
+**Work left**:
 
     project = <Project>
     AND (issuetype = Story
@@ -104,7 +104,7 @@ Add the following rule:
     * * * * * php /path-to-your-project/artisan schedule:run >> /dev/null 2>&1
 
 
-There is a scheduled command that refreshes all the active burndown boards at 07:00.
+There is a scheduled command at 8AM and 6PM, that checks if the current day is saved for all the active boards. If already saved nothing is updated else the new data will be fetched.
 
 Check if its correctly saved.
 
@@ -154,6 +154,9 @@ Run the cronjobs commands manually
 Clear Cache
 
     $ php artisan config:clear
+
+Run the daily scheduled Jira API manually
+    php artisan jira:savenewday
 
 -----
 <a name="item5"></a>
