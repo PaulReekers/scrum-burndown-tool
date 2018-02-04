@@ -35,11 +35,27 @@
                 URL::to('/chart/' . $chart->boardId
                 . '/update')
             }}">Update</a>
-            <button v-on:click="play" type="button" class="btn btn-small btn-info">Go Coosto!</button>
+            <button v-on:click="play" type="button" class="btn btn-small btn-info" data-toggle="modal" data-target="#goCoostoModal">Go Coosto!</button>
             <audio preload="auto" ref="goCoosto" src="{{ url('sound/GoCoostoAudio.mp3') }}"></audio>
+
         </div>
         <h6><small><samp>Last update: {{ $chart->updated_at }}</samp></small></h6>
     @endif
+
+    <!-- Modal -->
+    <div id="goCoostoModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="goCoostoModal" aria-hidden="true">
+
+            <div class="modal-dialog modal-notify modal-danger" role="document">
+                <div class="modal-content text-center">
+                    <div class="modal-body">
+                        <img class="goCoostoImage" :src="selectedImage" alt="Go Coosto!">
+                    </div>
+                </div>
+            </div>
+
+    </div>
+
+
 </div>
 
 </div>
