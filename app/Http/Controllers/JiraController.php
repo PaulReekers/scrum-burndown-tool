@@ -16,6 +16,10 @@ class JiraController extends Controller
         $burndown = new Burndown($board->boardId);
         $sprintInfo = $burndown->getSprintNumber();
         $sprintProgress = $burndown->getSprintProgress();
+        $storyPointsDone = $sprintProgress["done"];
+        $tasksDone = $burndown->getFilterTotalCount($board->tasksDoneFilter);
+        $startDate = Carbon::parse($sprintInfo['values'][0]['startDate'])->toDateString();
+        $endDate = Carbon::parse($sprintInfo['values'][0]['endDate'])->toDateString();
 
         $dayExists = Chart::where('boardId', '=', $board->boardId)
             ->where('sprintDay', '=', Carbon::now()->toDateString())
@@ -26,18 +30,20 @@ class JiraController extends Controller
             throw new Exception('You already saved this day');
         }
 
+        if ($startDate == Carbon::now()->toDateString()) {
+            $tasksDone = 0;
+            $storyPointsDone = 0;
+        }
+
         $chart = new Chart([
             'sprintname' => $sprintInfo['values'][0]['name'],
             'storyPointsTotal' => $sprintProgress['total'],
             'tasksTotal' => $burndown->getFilterTotalCount($board->totalTaskFilter),
-            'tasksDone' => 0,
-            'storyPointsDone' => 0,
-            'startDate' => Carbon::parse($sprintInfo['values'][0]['startDate'])
-                ->toDateString(),
-            'endDate' => Carbon::parse($sprintInfo['values'][0]['endDate'])
-                ->toDateString(),
-            'sprintDay' => Carbon::now()
-                ->toDateString(),
+            'tasksDone' => $tasksDone,
+            'storyPointsDone' => $storyPointsDone,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+            'sprintDay' => Carbon::now()->toDateString(),
         ]);
 
         $chart->boardId = $board->boardId;
